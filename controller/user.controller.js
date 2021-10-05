@@ -15,7 +15,9 @@ class UserController{
         const id = req.params.id
         const user = await db.query('SELECT * FROM person where id = $1', [id])
         res.json(user.rows[0])
+
     }
+
     async updateUser(req, res) {
         const {id, name, surname} = req.body
         const user = await db.query(
