@@ -1,4 +1,5 @@
 const db = require('../db')
+const {rows} = require("pg/lib/defaults");
 
 
 class UserController{
@@ -12,10 +13,16 @@ class UserController{
         res.json(users.rows)
     }
     async getOneUser(req, res) {
-        const id = req.params.id
-        const user = await db.query('SELECT * FROM person where id = $1', [id])
-        res.json(user.rows[0])
-
+        try {
+            const {id} = req.params
+            if (!id){
+                res.status(400).json({message: 'Id not found'})
+            }
+            const user = await db.query('SELECT * FROM person where id = $1', [id]);
+            return res.json(user.rows[0])
+        } catch (e) {
+            res.status(500).json(e)
+        }
     }
 
     async updateUser(req, res) {
